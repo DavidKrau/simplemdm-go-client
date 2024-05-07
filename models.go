@@ -1,4 +1,4 @@
-package simplemdmAPIClient
+package simplemdm
 
 type Attribute struct {
 	Data struct {

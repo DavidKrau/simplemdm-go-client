@@ -1,4 +1,4 @@
-package simplemdmAPIClient
+package simplemdm
 
 import (
 	"encoding/json"
