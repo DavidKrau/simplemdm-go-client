@@ -294,7 +294,7 @@ func (c *Client) AssignToDeviceGroupProfile(profileID string, groupID string) (*
 		return nil, err
 	}
 
-	body, err := c.RequestResponse200(req)
+	body, err := c.RequestResponse204or409(req)
 	if err != nil {
 		return nil, err
 	}
@@ -316,7 +316,7 @@ func (c *Client) UnassignFromDeviceGroupProfile(profileID string, groupID string
 		return nil, err
 	}
 
-	body, err := c.RequestResponse200(req)
+	body, err := c.RequestResponse204or409(req)
 	if err != nil {
 		return nil, err
 	}
@@ -337,7 +337,7 @@ func (c *Client) AssignToDeviceProfile(profileID string, deviceID string) error 
 		return err
 	}
 
-	body, err := c.RequestResponse204(req)
+	body, err := c.RequestResponse204or409(req)
 	if err != nil {
 		return err
 	}
@@ -356,7 +356,7 @@ func (c *Client) UnAssignToDeviceProfile(profileID string, deviceID string) erro
 		return err
 	}
 
-	body, err := c.RequestResponse204(req)
+	body, err := c.RequestResponse204or409(req)
 	if err != nil {
 		return err
 	}

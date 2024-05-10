@@ -161,3 +161,35 @@ func (c *Client) RequestResponse204(req *http.Request) ([]byte, error) {
 
 	return body, nil
 }
+
+// 204 or 409 response
+func (c *Client) RequestResponse204or409(req *http.Request) ([]byte, error) {
+	req.SetBasicAuth(c.APIKey, "")
+	time.Sleep(1 * time.Second)
+	res, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode == http.StatusConflict {
+		//profiles was not present or already assigned
+		return nil, nil
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		resBody := new(bytes.Buffer)
+		_, err = resBody.ReadFrom(res.Body)
+		if err != nil {
+			return nil, fmt.Errorf("got a non 204 or 409 status code: %v", res.StatusCode)
+		}
+		return nil, fmt.Errorf("got a non 204 or 409 status code: %v - %s", res.StatusCode, resBody.String())
+	}
+
+	return body, nil
+}
