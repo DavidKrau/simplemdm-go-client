@@ -8,7 +8,7 @@ import (
 )
 
 // GetAttribute - Returns a specifc attribute
-func (c *Client) GetAttribute(name string) (*Attribute, error) {
+func (c *Client) AttributeGet(name string) (*Attribute, error) {
 	url := fmt.Sprintf("https://%s/api/v1/custom_attributes/%s", c.HostName, name)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -30,7 +30,7 @@ func (c *Client) GetAttribute(name string) (*Attribute, error) {
 }
 
 // CreateAttribute - Create new attribute
-func (c *Client) CreateAttribute(name string, defaultValue string) (*Attribute, error) {
+func (c *Client) AttributeCreate(name string, defaultValue string) (*Attribute, error) {
 	url := fmt.Sprintf("https://%s/api/v1/custom_attributes/", c.HostName)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
@@ -63,7 +63,7 @@ func (c *Client) CreateAttribute(name string, defaultValue string) (*Attribute, 
 }
 
 // UpdateAttribute - Updates an attribute
-func (c *Client) UpdateAttribute(name string, defaultValue string) error {
+func (c *Client) AttributeUpdate(name string, defaultValue string) error {
 	url := fmt.Sprintf("https://%s/api/v1/custom_attributes/%s", c.HostName, name)
 	req, err := http.NewRequest(http.MethodPatch, url, nil)
 	if err != nil {
@@ -94,7 +94,7 @@ func (c *Client) UpdateAttribute(name string, defaultValue string) error {
 }
 
 // DeleteAttribute - Deletes an attribute
-func (c *Client) DeleteAttribute(name string) error {
+func (c *Client) AttributeDelete(name string) error {
 	url := fmt.Sprintf("https://%s/api/v1/custom_attributes/%s", c.HostName, name)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
@@ -115,7 +115,7 @@ func (c *Client) DeleteAttribute(name string) error {
 }
 
 // SetAttributeForDeviceGroupAttribute - Updates an attribute for group
-func (c *Client) SetAttributeForDeviceGroupAttribute(groupID string, attribute string, defaultValue string) error {
+func (c *Client) AttributeSetAttributeForDeviceGroup(groupID string, attribute string, defaultValue string) error {
 	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s/custom_attribute_values/%s", c.HostName, groupID, attribute)
 	req, err := http.NewRequest(http.MethodPut, url, nil)
 	if err != nil {
@@ -142,8 +142,8 @@ func (c *Client) SetAttributeForDeviceGroupAttribute(groupID string, attribute s
 }
 
 // GetAttributesForDeviceGroupAttribute - Returns a specifc attribute
-func (c *Client) GetAttributesForDeviceGroupAttribute(ID string) (*AttributeArray, error) {
-	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s/custom_attribute_values", c.HostName, ID)
+func (c *Client) AttributeGetAttributesForDeviceGroup(groupID string) (*AttributeArray, error) {
+	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s/custom_attribute_values", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -164,7 +164,7 @@ func (c *Client) GetAttributesForDeviceGroupAttribute(ID string) (*AttributeArra
 }
 
 // SetAttributeForDeviceGroupAttribute - Updates an attribute for group
-func (c *Client) SetAttributeForDeviceAttribute(deviceID string, attribute string, value string) error {
+func (c *Client) AttributeSetAttributeForDevice(deviceID string, attribute string, value string) error {
 	url := fmt.Sprintf("https://%s/api/v1/devices/%s/custom_attribute_values/%s", c.HostName, deviceID, attribute)
 	req, err := http.NewRequest(http.MethodPut, url, nil)
 	if err != nil {
@@ -191,8 +191,8 @@ func (c *Client) SetAttributeForDeviceAttribute(deviceID string, attribute strin
 }
 
 // GetAttributesForDeviceGroupAttribute - Returns a specifc attribute
-func (c *Client) GetAttributesForDeviceAttribute(ID string) (*AttributeArray, error) {
-	url := fmt.Sprintf("https://%s/api/v1/devices/%s/custom_attribute_values", c.HostName, ID)
+func (c *Client) AttributeGetAttributesForDevice(deviceID string) (*AttributeArray, error) {
+	url := fmt.Sprintf("https://%s/api/v1/devices/%s/custom_attribute_values", c.HostName, deviceID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err

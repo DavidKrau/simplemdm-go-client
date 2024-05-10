@@ -8,8 +8,8 @@ import (
 )
 
 // GetDeviceGroup - Returns a specifc device group
-func (c *Client) GetDeviceGroup(ID string) (*SimplemdmDefaultStruct, error) {
-	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s", c.HostName, ID)
+func (c *Client) DeviceGroupGet(groupID string) (*SimplemdmDefaultStruct, error) {
+	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -30,8 +30,8 @@ func (c *Client) GetDeviceGroup(ID string) (*SimplemdmDefaultStruct, error) {
 }
 
 // DeleteDeviceGroup - Returns a specifc device group
-func (c *Client) DeleteDeviceGroup(ID string) error {
-	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s", c.HostName, ID)
+func (c *Client) DeviceGroupDelete(groupID string) error {
+	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (c *Client) DeleteDeviceGroup(ID string) error {
 }
 
 // CreateDeviceGroup - new device group
-func (c *Client) CreateDeviceGroup(name string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) DeviceGroupCreate(name string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/device_groups/", c.HostName)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
@@ -81,8 +81,8 @@ func (c *Client) CreateDeviceGroup(name string) (*SimplemdmDefaultStruct, error)
 }
 
 // UpdateDeviceGroup - update for existing group
-func (c *Client) UpdateDeviceGroup(ID string) error {
-	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s", c.HostName, ID)
+func (c *Client) DeviceGroupUpdate(groupID string) error {
+	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodPatch, url, nil)
 	if err != nil {
 		return err
@@ -112,7 +112,7 @@ func (c *Client) UpdateDeviceGroup(ID string) error {
 }
 
 // AssignDeviceToDeviceGroup - Returns a specifc device group
-func (c *Client) AssignDeviceToDeviceGroup(deviceID string, groupID string) error {
+func (c *Client) DeviceGroupAssignDevice(deviceID string, groupID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s/devices/%s", c.HostName, groupID, deviceID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {

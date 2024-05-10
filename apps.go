@@ -7,7 +7,7 @@ import (
 )
 
 // GetAssignmentGroup - Returns a specifc assignment group
-func (c *Client) GetApp(id string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) AppGet(id string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/apps/%s", c.HostName, id)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {

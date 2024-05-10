@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetDevice(ID string) (*SimplemdmDefaultStruct, error) {
-	url := fmt.Sprintf("https://%s/api/v1/devices/%s?include_secret_custom_attributes=true", c.HostName, ID)
+func (c *Client) DeviceGet(deviceID string) (*SimplemdmDefaultStruct, error) {
+	url := fmt.Sprintf("https://%s/api/v1/devices/%s?include_secret_custom_attributes=true", c.HostName, deviceID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (c *Client) GetDevice(ID string) (*SimplemdmDefaultStruct, error) {
 }
 
 // CreateDevice - Create new device
-func (c *Client) CreateDevice(name string, groupID string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) DeviceCreate(name string, groupID string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/devices/", c.HostName)
 
 	req, err := http.NewRequest(http.MethodPost, url, nil)
@@ -60,8 +60,8 @@ func (c *Client) CreateDevice(name string, groupID string) (*SimplemdmDefaultStr
 }
 
 // UpdateDevice - Updates an device
-func (c *Client) UpdateDevice(ID string, name string, deviceMame string) (*SimplemdmDefaultStruct, error) {
-	url := fmt.Sprintf("https://%s/api/v1/devices/%s", c.HostName, ID)
+func (c *Client) DeviceUpdate(deviceID string, name string, deviceMame string) (*SimplemdmDefaultStruct, error) {
+	url := fmt.Sprintf("https://%s/api/v1/devices/%s", c.HostName, deviceID)
 	req, err := http.NewRequest(http.MethodPatch, url, nil)
 	if err != nil {
 		return nil, err
@@ -89,8 +89,8 @@ func (c *Client) UpdateDevice(ID string, name string, deviceMame string) (*Simpl
 }
 
 // DeleteDevice - Deletes an device
-func (c *Client) DeleteDevice(ID string) error {
-	url := fmt.Sprintf("https://%s/api/v1/devices/%s", c.HostName, ID)
+func (c *Client) DeviceDelete(deviceID string) error {
+	url := fmt.Sprintf("https://%s/api/v1/devices/%s", c.HostName, deviceID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return err

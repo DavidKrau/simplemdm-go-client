@@ -65,7 +65,7 @@ func (c *Client) AssignmentGroupCreate(name string, autoDeploy bool, groupType s
 }
 
 // DeleteProfile - Deletes an profile
-func (c *Client) DeleteAssignmentGroup(ID string) error {
+func (c *Client) AssignmentGroupDelete(ID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s", c.HostName, ID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
@@ -86,7 +86,7 @@ func (c *Client) DeleteAssignmentGroup(ID string) error {
 }
 
 // UpdateAssignmentGroup - Updates an assignment group
-func (c *Client) UpdateAssignmentGroup(name string, autoDeploy bool, ID string, groupType string, installType string) error {
+func (c *Client) AssignmentGroupUpdate(name string, autoDeploy bool, ID string, groupType string, installType string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s", c.HostName, ID)
 	req, err := http.NewRequest(http.MethodPatch, url, nil)
 	if err != nil {
@@ -133,7 +133,7 @@ func (c *Client) UpdateAssignmentGroup(name string, autoDeploy bool, ID string, 
 }
 
 // GetAssignmentGroup - Returns a specifc assignment group
-func (c *Client) GetAssignmentGroup(ID string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) AssignmentGroupGet(ID string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s", c.HostName, ID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -157,7 +157,7 @@ func (c *Client) GetAssignmentGroup(ID string) (*SimplemdmDefaultStruct, error) 
 // object type is app, device, group, profile, devices
 // groupid is id of the assignment app
 // objectid is id of the object we want to assign to the group
-func (c *Client) AssignToAssignmentGroup(groupID string, objectID string, objectType string) error {
+func (c *Client) AssignmentGroupAssignObject(groupID string, objectID string, objectType string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/%s/%s", c.HostName, groupID, objectType, objectID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
@@ -180,7 +180,7 @@ func (c *Client) AssignToAssignmentGroup(groupID string, objectID string, object
 // object type is app, device, group, profile
 // groupid is id of the assignment app
 // objectid is id of the object we want to remove to the group
-func (c *Client) UnAssignFromAssignmentGroup(groupID string, objectID string, objectType string) error {
+func (c *Client) AssignmentGroupUnAssignObject(groupID string, objectID string, objectType string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/%s/%s", c.HostName, groupID, objectType, objectID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
@@ -200,7 +200,7 @@ func (c *Client) UnAssignFromAssignmentGroup(groupID string, objectID string, ob
 	return nil
 }
 
-func (c *Client) PushAppsAssignmentGroup(groupID string) error {
+func (c *Client) AssignmentGroupPushApps(groupID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/push_apps", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
@@ -220,7 +220,7 @@ func (c *Client) PushAppsAssignmentGroup(groupID string) error {
 	return nil
 }
 
-func (c *Client) UpdateInstalledAppsAssignmentGroup(groupID string) error {
+func (c *Client) AssignmentGroupUpdateInstalledApps(groupID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/update_apps", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
@@ -240,7 +240,7 @@ func (c *Client) UpdateInstalledAppsAssignmentGroup(groupID string) error {
 	return nil
 }
 
-func (c *Client) SyncProfilesAssignmentGroup(groupID string) error {
+func (c *Client) AssignmentGroupSyncProfiles(groupID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/sync_profiles", c.HostName, groupID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
