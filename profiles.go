@@ -287,47 +287,43 @@ func (c *Client) GetAllProfiles(ID string) (*SimpleMDMArayStruct, error) {
 }
 
 // AssignToDeviceGroupProfile - Returns a specifc profile
-func (c *Client) AssignToDeviceGroupProfile(profileID string, groupID string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) AssignToDeviceGroupProfile(profileID string, groupID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/%s/device_groups/%s", c.HostName, profileID, groupID)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	body, err := c.RequestResponse204or409(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	profile := SimplemdmDefaultStruct{}
-	err = json.Unmarshal(body, &profile)
-	if err != nil {
-		return nil, err
+	if string(body) != "" {
+		return errors.New(string(body))
 	}
 
-	return &profile, nil
+	return nil
 }
 
 // UnassignFromDeviceGroupProfile - Returns a specifc profile
-func (c *Client) UnassignFromDeviceGroupProfile(profileID string, groupID string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) UnassignFromDeviceGroupProfile(profileID string, groupID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/%s/device_groups/%s", c.HostName, profileID, groupID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	body, err := c.RequestResponse204or409(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	profile := SimplemdmDefaultStruct{}
-	err = json.Unmarshal(body, &profile)
-	if err != nil {
-		return nil, err
+	if string(body) != "" {
+		return errors.New(string(body))
 	}
 
-	return &profile, nil
+	return nil
 }
 
 func (c *Client) AssignToDeviceProfile(profileID string, deviceID string) error {
