@@ -54,6 +54,10 @@ type Attributes struct {
 	Value                  string `json:"value"`
 	DeviceName             string `json:"device_name"`
 	EnrollmentURL          string `json:"enrollment_url"`
+	Content                string `json:"content"`
+	VariableSupport        bool   `json:"variable_support"`
+	CreatedAt              string `json:"created_at"`
+	UpdatedAt              string `json:"updated_at"`
 }
 
 type Relations struct {
