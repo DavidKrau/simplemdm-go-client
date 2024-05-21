@@ -41,9 +41,9 @@ func (c *Client) ScriptCreate(name string, variableSupport bool, scriptFile stri
 
 	switch {
 	case variableSupport:
-		q.Add("variable_support", "true")
+		q.Add("variable_support", "1")
 	default:
-		q.Add("variable_support", "false")
+		q.Add("variable_support", "0")
 	}
 
 	// encoding all parameters
@@ -64,7 +64,7 @@ func (c *Client) ScriptCreate(name string, variableSupport bool, scriptFile stri
 	return &script, nil
 }
 
-// DeleteProfile - Deletes an profile
+// ScriptDelete - Deletes an script
 func (c *Client) ScriptDelete(scriptID string) error {
 	url := fmt.Sprintf("https://%s/api/v1/scripts/%s", c.HostName, scriptID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
@@ -85,7 +85,7 @@ func (c *Client) ScriptDelete(scriptID string) error {
 	return nil
 }
 
-// UpdateProfile - Updates an profile
+// ScriptUpdate - Updates an script
 func (c *Client) ScriptUpdate(name string, variableSupport bool, scriptFile string, ID string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/scripts/%s", c.HostName, ID)
 	payload := &bytes.Buffer{}
@@ -115,9 +115,9 @@ func (c *Client) ScriptUpdate(name string, variableSupport bool, scriptFile stri
 
 	switch {
 	case variableSupport:
-		q.Add("variable_support", "true")
+		q.Add("variable_support", "1")
 	default:
-		q.Add("variable_support", "false")
+		q.Add("variable_support", "0")
 	}
 	// encoding all parameters
 	req.URL.RawQuery = q.Encode()
@@ -137,7 +137,7 @@ func (c *Client) ScriptUpdate(name string, variableSupport bool, scriptFile stri
 	return &script, nil
 }
 
-// GetProfile - Returns a specifc profile
+// ScriptGet - Returns a specifc script
 func (c *Client) ScriptGet(scriptID string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/scripts/%s", c.HostName, scriptID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
