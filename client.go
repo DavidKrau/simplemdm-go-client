@@ -20,7 +20,7 @@ func NewClient(hostname string, apikey string) *Client {
 		HostName: hostname,
 		APIKey:   apikey,
 		httpClient: &http.Client{
-			Timeout: 10 * time.Second,
+			Timeout: 60 * time.Second,
 		},
 	}
 }
