@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
+	"strings"
 )
 
 func (c *Client) ScriptCreate(name string, variableSupport bool, scriptFile string) (*SimplemdmDefaultStruct, error) {
@@ -14,9 +16,17 @@ func (c *Client) ScriptCreate(name string, variableSupport bool, scriptFile stri
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 
-	_ = writer.WriteField("file", scriptFile)
+	r := strings.NewReader(scriptFile)
+	part1,
+		errFile1 := writer.CreateFormFile("file", name+".mobileconfig")
+	_, errFile1 = io.Copy(part1, r)
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	err := writer.Close()
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -81,9 +91,17 @@ func (c *Client) ScriptUpdate(name string, variableSupport bool, scriptFile stri
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 
-	_ = writer.WriteField("file", scriptFile)
+	r := strings.NewReader(scriptFile)
+	part1,
+		errFile1 := writer.CreateFormFile("file", name+".mobileconfig")
+	_, errFile1 = io.Copy(part1, r)
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	err := writer.Close()
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
