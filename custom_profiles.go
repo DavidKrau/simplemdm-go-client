@@ -5,11 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 )
 
@@ -18,20 +15,13 @@ func (c *Client) CustomProfileCreate(name string, mobileConfig string, userScope
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/", c.HostName)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	file, errFile1 := os.Open(mobileConfig)
-	defer file.Close()
-	part1,
-		errFile1 := writer.CreateFormFile("mobileconfig", filepath.Base(mobileConfig))
-	_, errFile1 = io.Copy(part1, file)
-	if errFile1 != nil {
-		fmt.Println(errFile1)
-		return nil, errFile1
-	}
+
+	_ = writer.WriteField("mobileconfig", mobileConfig)
 	err := writer.Close()
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
+
 	//MARK: 201 response
 	req, err := http.NewRequest(http.MethodPost, url, payload)
 	if err != nil {
@@ -124,20 +114,13 @@ func (c *Client) CustomProfileUpdate(name string, mobileConfig string, userScope
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/%s", c.HostName, ID)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	file, errFile1 := os.Open(mobileConfig)
-	defer file.Close()
-	part1,
-		errFile1 := writer.CreateFormFile("mobileconfig", filepath.Base(mobileConfig))
-	_, errFile1 = io.Copy(part1, file)
-	if errFile1 != nil {
-		fmt.Println(errFile1)
-		return nil, errFile1
-	}
+
+	_ = writer.WriteField("mobileconfig", mobileConfig)
 	err := writer.Close()
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
+
 	req, err := http.NewRequest(http.MethodPatch, url, payload)
 	if err != nil {
 		return nil, err
