@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // CreateProfile - Create new profile
@@ -15,10 +17,17 @@ func (c *Client) CustomProfileCreate(name string, mobileConfig string, userScope
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/", c.HostName)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-
-	_ = writer.WriteField("mobileconfig", mobileConfig)
+	r := strings.NewReader(mobileConfig)
+	part1,
+		errFile1 := writer.CreateFormFile("mobileconfig", name+".mobileconfig")
+	_, errFile1 = io.Copy(part1, r)
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	err := writer.Close()
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -115,9 +124,17 @@ func (c *Client) CustomProfileUpdate(name string, mobileConfig string, userScope
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 
-	_ = writer.WriteField("mobileconfig", mobileConfig)
+	r := strings.NewReader(mobileConfig)
+	part1,
+		errFile1 := writer.CreateFormFile("mobileconfig", name+".mobileconfig")
+	_, errFile1 = io.Copy(part1, r)
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	err := writer.Close()
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
