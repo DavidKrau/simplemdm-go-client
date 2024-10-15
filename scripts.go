@@ -5,31 +5,21 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
-	"path/filepath"
 )
 
 func (c *Client) ScriptCreate(name string, variableSupport bool, scriptFile string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/scripts/", c.HostName)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	file, errFile1 := os.Open(scriptFile)
-	defer file.Close()
-	part1,
-		errFile1 := writer.CreateFormFile("file", filepath.Base(scriptFile))
-	_, errFile1 = io.Copy(part1, file)
-	if errFile1 != nil {
-		fmt.Println(errFile1)
-		return nil, errFile1
-	}
+
+	_ = writer.WriteField("file", scriptFile)
 	err := writer.Close()
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
+
 	req, err := http.NewRequest(http.MethodPost, url, payload)
 	if err != nil {
 		return nil, err
@@ -90,20 +80,13 @@ func (c *Client) ScriptUpdate(name string, variableSupport bool, scriptFile stri
 	url := fmt.Sprintf("https://%s/api/v1/scripts/%s", c.HostName, ID)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	file, errFile1 := os.Open(scriptFile)
-	defer file.Close()
-	part1,
-		errFile1 := writer.CreateFormFile("file", filepath.Base(scriptFile))
-	_, errFile1 = io.Copy(part1, file)
-	if errFile1 != nil {
-		fmt.Println(errFile1)
-		return nil, errFile1
-	}
+
+	_ = writer.WriteField("file", scriptFile)
 	err := writer.Close()
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
+
 	req, err := http.NewRequest(http.MethodPatch, url, payload)
 	if err != nil {
 		return nil, err
