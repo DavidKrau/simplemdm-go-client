@@ -53,32 +53,34 @@ func (c *Client) RequestResponse200(req *http.Request) ([]byte, error) {
 }
 
 // 200 response, body (mobielconfig) return + SHA256 from header
-func (c *Client) RequestResponse200Profile(req *http.Request) ([]byte, string, error) {
+func (c *Client) RequestResponse200Profile(req *http.Request) (string, string, error) {
 	req.SetBasicAuth(c.APIKey, "")
 	time.Sleep(1 * time.Second)
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, "", err
+		return "", "", err
 	}
 	defer res.Body.Close()
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, "", err
-	}
 
 	if res.StatusCode != http.StatusOK {
 		resBody := new(bytes.Buffer)
 		_, err = resBody.ReadFrom(res.Body)
 		if err != nil {
-			return nil, "", fmt.Errorf("got a non 204 status code: %v", res.StatusCode)
+			return "", "", fmt.Errorf("got a non 204 status code: %v", res.StatusCode)
 		}
-		return nil, "", fmt.Errorf("got a non 204 status code: %v - %s", res.StatusCode, resBody.String())
+		return "", "", fmt.Errorf("got a non 204 status code: %v - %s", res.StatusCode, resBody.String())
 	}
 
 	sha := res.Header.Get("etag")[3:35]
+	resBody := new(bytes.Buffer)
+	_, err = resBody.ReadFrom(res.Body)
+	if err != nil {
+		return "", "", fmt.Errorf("error open file: %v", err)
+	}
 
-	return body, sha, nil
+	bodyString := resBody.String()
+
+	return bodyString, sha, nil
 }
 
 // 201 response code

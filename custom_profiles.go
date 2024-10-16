@@ -18,8 +18,11 @@ func (c *Client) CustomProfileCreate(name string, mobileConfig string, userScope
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 	r := strings.NewReader(mobileConfig)
-	part1,
-		errFile1 := writer.CreateFormFile("mobileconfig", name+".mobileconfig")
+	part1, errFile1 := writer.CreateFormFile("mobileconfig", name+".mobileconfig")
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	_, errFile1 = io.Copy(part1, r)
 	if errFile1 != nil {
 		fmt.Println(errFile1)
@@ -125,8 +128,11 @@ func (c *Client) CustomProfileUpdate(name string, mobileConfig string, userScope
 	writer := multipart.NewWriter(payload)
 
 	r := strings.NewReader(mobileConfig)
-	part1,
-		errFile1 := writer.CreateFormFile("mobileconfig", name+".mobileconfig")
+	part1, errFile1 := writer.CreateFormFile("mobileconfig", name+".mobileconfig")
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	_, errFile1 = io.Copy(part1, r)
 	if errFile1 != nil {
 		fmt.Println(errFile1)
@@ -220,17 +226,17 @@ func (c *Client) CustomProfileGet(profileID string) (*SimplemdmDefaultStruct, er
 }
 
 // GetProfileSHA - Returns a specifc profile
-func (c *Client) CustomProfileSHA(profileID string) (string, []byte, error) {
+func (c *Client) CustomProfileSHA(profileID string) (string, string, error) {
 	downloadurl := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/%s/download", c.HostName, profileID)
 
 	req, err := http.NewRequest(http.MethodGet, downloadurl, nil)
 	if err != nil {
-		return "", nil, err
+		return "", "", err
 	}
 
 	body, sha, err := c.RequestResponse200Profile(req)
 	if err != nil {
-		return "", nil, err
+		return "", "", err
 	}
 
 	return sha, body, nil

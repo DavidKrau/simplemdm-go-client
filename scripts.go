@@ -17,8 +17,11 @@ func (c *Client) ScriptCreate(name string, variableSupport bool, scriptFile stri
 	writer := multipart.NewWriter(payload)
 
 	r := strings.NewReader(scriptFile)
-	part1,
-		errFile1 := writer.CreateFormFile("file", name+".mobileconfig")
+	part1, errFile1 := writer.CreateFormFile("file", name+".script")
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	_, errFile1 = io.Copy(part1, r)
 	if errFile1 != nil {
 		fmt.Println(errFile1)
@@ -92,8 +95,11 @@ func (c *Client) ScriptUpdate(name string, variableSupport bool, scriptFile stri
 	writer := multipart.NewWriter(payload)
 
 	r := strings.NewReader(scriptFile)
-	part1,
-		errFile1 := writer.CreateFormFile("file", name+".mobileconfig")
+	part1, errFile1 := writer.CreateFormFile("file", name+".script")
+	if errFile1 != nil {
+		fmt.Println(errFile1)
+		return nil, errFile1
+	}
 	_, errFile1 = io.Copy(part1, r)
 	if errFile1 != nil {
 		fmt.Println(errFile1)
