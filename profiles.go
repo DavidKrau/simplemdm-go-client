@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 // ProfileGet - Returns a specific profile
@@ -107,4 +108,54 @@ func (c *Client) ProfileUnAssignToDevice(profileID string, deviceID string) erro
 	}
 
 	return nil
+}
+
+// GetAllProfiles - Returns all Profiles
+func (c *Client) ProfileGetAll() (*SimpleMDMArayStruct, error) {
+	url := fmt.Sprintf("https://%s/api/v1/profiles/?limit=100&starting_after=0", c.HostName)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.RequestResponse200(req)
+	if err != nil {
+		return nil, err
+	}
+
+	profiles := SimpleMDMArayStruct{}
+	err = json.Unmarshal(body, &profiles)
+	if err != nil {
+		return nil, err
+	}
+
+	if profiles.HasMore {
+		for {
+			profileloop := SimpleMDMArayStruct{}
+			url := fmt.Sprintf("https://%s/api/v1/profiles/?limit=100&starting_after=%s", c.HostName, strconv.Itoa(profiles.Data[len(profiles.Data)-1].ID))
+			req, err := http.NewRequest(http.MethodGet, url, nil)
+			if err != nil {
+				return nil, err
+			}
+
+			body, err := c.RequestResponse200(req)
+			if err != nil {
+				return nil, err
+			}
+
+			err = json.Unmarshal(body, &profileloop)
+			if err != nil {
+				return nil, err
+			}
+
+			profiles.Data = append(profiles.Data, profileloop.Data...)
+
+			if !profileloop.HasMore {
+				profiles.HasMore = false
+				break
+			}
+		}
+	}
+
+	return &profiles, nil
 }
