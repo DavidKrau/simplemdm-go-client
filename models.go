@@ -66,7 +66,7 @@ type Attributes struct {
 	PendingCount           int    `json:"pending_count"`
 	SuccessCount           int    `json:"success_count"`
 	ErroredCount           int    `json:"errored_count"`
-	CustomAttributeRegex   string `json:"custom_attribute_regex"` // FIXME: checker s'il faut bien mettre tous les attributs ici ou pas
+	CustomAttributeRegex   string `json:"custom_attribute_regex"`
 }
 
 type Relations struct {
@@ -77,6 +77,7 @@ type Relations struct {
 	Devices          Devices          `json:"devices,omitempty"`
 	Device           Device           `json:"device,omitempty"`
 	CustomAttributes CustomAttributes `json:"custom_attribute_values,omitempty"`
+	CustomAttribute  CustomAttribute  `json:"custom_attribute,omitempty"`
 }
 
 type Apps struct {
@@ -85,6 +86,10 @@ type Apps struct {
 
 type CustomAttributes struct {
 	Data []DataCustomAttributes `json:"data,omitempty"`
+}
+
+type CustomAttribute struct {
+	Data DataCustomAttributes `json:"data,omitempty"`
 }
 
 type DeviceGroups struct {
