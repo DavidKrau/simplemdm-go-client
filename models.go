@@ -56,8 +56,17 @@ type Attributes struct {
 	EnrollmentURL          string `json:"enrollment_url"`
 	Content                string `json:"content"`
 	VariableSupport        bool   `json:"variable_support"`
+	CreateBy               string `json:"created_by"`
 	CreatedAt              string `json:"created_at"`
 	UpdatedAt              string `json:"updated_at"`
+	ScriptName             string `json:"script_name"`
+	JobName                string `json:"job_name"`
+	JobId                  string `json:"job_id"`
+	Status                 string `json:"status"`
+	PendingCount           int    `json:"pending_count"`
+	SuccessCount           int    `json:"success_count"`
+	ErroredCount           int    `json:"errored_count"`
+	CustomAttributeRegex   string `json:"custom_attribute_regex"`
 }
 
 type Relations struct {
@@ -66,7 +75,9 @@ type Relations struct {
 	DeviceGroup      DeviceGroup      `json:"device_group,omitempty"`
 	Media            Media            `json:"media,omitempty"`
 	Devices          Devices          `json:"devices,omitempty"`
+	Device           Device           `json:"device,omitempty"`
 	CustomAttributes CustomAttributes `json:"custom_attribute_values,omitempty"`
+	CustomAttribute  CustomAttribute  `json:"custom_attribute,omitempty"`
 }
 
 type Apps struct {
@@ -75,6 +86,10 @@ type Apps struct {
 
 type CustomAttributes struct {
 	Data []DataCustomAttributes `json:"data,omitempty"`
+}
+
+type CustomAttribute struct {
+	Data DataCustomAttributes `json:"data,omitempty"`
 }
 
 type DeviceGroups struct {
@@ -93,10 +108,15 @@ type Devices struct {
 	Data []Data `json:"data,omitempty"`
 }
 
+type Device struct {
+	Data []Data `json:"data,omitempty"`
+}
+
 type Data struct {
 	Type string `json:"type"`
 	ID   int    `json:"id"`
 }
+
 type DataCustomAttributes struct {
 	Type       string     `json:"type"`
 	ID         string     `json:"id"`
