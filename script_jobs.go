@@ -65,7 +65,7 @@ func (c *Client) ScriptJobCreate(
 
 // ScriptJobDelete - Deletes an script job
 func (c *Client) ScriptCancelJob(scriptID string) error {
-	url := fmt.Sprintf("https://%s/api/v1/scripts_jobs/%s", c.HostName, scriptID)
+	url := fmt.Sprintf("https://%s/api/v1/script_jobs/%s", c.HostName, scriptID)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func (c *Client) ScriptCancelJob(scriptID string) error {
 
 // ScriptJobGet - Returns a specifc script job
 func (c *Client) ScriptJobGet(scriptJobID string) (*SimplemdmDefaultStruct, error) {
-	url := fmt.Sprintf("https://%s/api/v1/scripts_jobs/%s", c.HostName, scriptJobID)
+	url := fmt.Sprintf("https://%s/api/v1/script_jobs/%s", c.HostName, scriptJobID)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
