@@ -67,9 +67,10 @@ type Attributes struct {
 	SuccessCount           int    `json:"success_count"`
 	ErroredCount           int    `json:"errored_count"`
 	CustomAttributeRegex   string `json:"custom_attribute_regex"`
-	AppStoreId             string `json:"app_store_id"`
-	BundleId               string `json:"bundle_id"`
+	AppStoreId             int    `json:"itunes_store_id"`
+	BundleId               string `json:"bundle_identifier"`
 	Binary                 string `json:"binary"`
+	DeployTo               string `json:"deploy_to"`
 }
 
 type Relations struct {

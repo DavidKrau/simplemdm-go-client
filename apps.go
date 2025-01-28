@@ -9,8 +9,6 @@ import (
 	"net/http"
 )
 
-// TODO: To implement : List all, List install...
-
 // GetAssignmentGroup - Returns a specifc assignment group
 func (c *Client) AppGet(id string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/apps/%s", c.HostName, id)
@@ -33,52 +31,63 @@ func (c *Client) AppGet(id string) (*SimplemdmDefaultStruct, error) {
 	return &app, nil
 }
 
-// TODO: binary string represent the pkg file so, type need to be change (I think)
-
 // AppCreate - Create new application
 func (c *Client) AppCreate(
 	appStoreId string,
 	bundleId string,
-	binary string,
 	name string) (*SimplemdmDefaultStruct, error) {
 
 	url := fmt.Sprintf("https://%s/api/v1/apps", c.HostName)
 
-	body := &bytes.Buffer{}
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
 
-	req, err := http.NewRequest(http.MethodPost, url, body)
+	if len(appStoreId) > 0 {
+		err := writer.WriteField("app_store_id", appStoreId)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
 
+	if len(bundleId) > 0 {
+		err := writer.WriteField("bundle_id", bundleId)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
+
+	if len(name) > 0 {
+		err := writer.WriteField("name", name)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
+
+	err := writer.Close()
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, payload)
 	if err != nil {
 		return nil, err
 	}
 
-	q := req.URL.Query()
-
-	q.Add("app_store_id", appStoreId)
-
-	if len(bundleId) > 0 {
-		q.Add("bundle_id", bundleId)
-	}
-	if len(binary) > 0 {
-		q.Add("binary", binary)
-	}
-	if name != "" {
-		q.Add("name", name)
-	}
-
-	req.URL.RawQuery = q.Encode()
-
-	resBody, err := c.RequestResponse201(req)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	body, err := c.RequestResponse201(req)
 	if err != nil {
 		return nil, err
 	}
 
 	app := SimplemdmDefaultStruct{}
-	err = json.Unmarshal(resBody, &app)
+	err = json.Unmarshal(body, &app)
 	if err != nil {
 		return nil, err
 	}
-
 	return &app, nil
 }
 
@@ -103,28 +112,39 @@ func (c *Client) AppDelete(appId string) error {
 	return nil
 }
 
-// TODO: binary string represent the pkg file so, type need to be change (I think)
-// AppUpdate - Updates an application
-func (c *Client) AppUpdate(appId string, binary string, name string, deployTo string) (*SimplemdmDefaultStruct, error) {
+// AppUpdate - Updates an application (Not work for shared app)
+func (c *Client) AppUpdate(appId string, name string, deployTo string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/apps/%s", c.HostName, appId)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
+
+	if len(name) > 0 {
+		err := writer.WriteField("name", name)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
+
+	if len(deployTo) > 0 {
+		err := writer.WriteField("deploy_to", deployTo)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
+
+	err := writer.Close()
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
 
 	req, err := http.NewRequest(http.MethodPatch, url, payload)
 	if err != nil {
 		return nil, err
 	}
 
-	q := req.URL.Query()
-
-	q.Add("name", name)
-
-	q.Add("binary", binary) // Need to be defined as multipart/form-data.
-
-	q.Add("deploy_to", deployTo)
-
-	// encoding all parameters
-	req.URL.RawQuery = q.Encode()
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	body, err := c.RequestResponse200(req)
