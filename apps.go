@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// GetAssignmentGroup - Returns a specifc assignment group
+// AppGet - Get specific App
 func (c *Client) AppGet(id string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/apps/%s", c.HostName, id)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
