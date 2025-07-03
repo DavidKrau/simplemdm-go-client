@@ -12,7 +12,6 @@ import (
 func (c *Client) ScriptJobCreate(
 	scriptId string,
 	deviceIDs []string,
-	groupIds []string,
 	assignmentGroupIds []string,
 	customAttribute string,
 	customAttributeRegex string,
@@ -33,9 +32,6 @@ func (c *Client) ScriptJobCreate(
 
 	if len(deviceIDs) > 0 {
 		q.Add("device_ids", strings.Join(deviceIDs, ","))
-	}
-	if len(groupIds) > 0 {
-		q.Add("group_ids", strings.Join(groupIds, ","))
 	}
 	if len(assignmentGroupIds) > 0 {
 		q.Add("assignment_group_ids", strings.Join(assignmentGroupIds, ","))
