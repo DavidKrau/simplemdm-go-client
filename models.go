@@ -1,5 +1,7 @@
 package simplemdm
 
+import "encoding/json"
+
 type Attribute struct {
 	Data struct {
 		Type       string     `json:"type"`
@@ -125,4 +127,11 @@ type DataCustomAttributes struct {
 	Type       string     `json:"type"`
 	ID         string     `json:"id"`
 	Attributes Attributes `json:"attributes"`
+}
+
+type DeclarationStruct struct {
+	Type        string          `json:"Type"`
+	Identifier  string          `json:"Identifier"`
+	ServerToken string          `json:"ServerToken"`
+	Payload     json.RawMessage `json:"Payload,omitempty"`
 }

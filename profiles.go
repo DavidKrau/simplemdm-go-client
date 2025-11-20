@@ -21,13 +21,13 @@ func (c *Client) ProfileGet(profileID string) (*SimplemdmDefaultStruct, error) {
 		return nil, err
 	}
 
-	app := SimplemdmDefaultStruct{}
-	err = json.Unmarshal(body, &app)
+	profile := SimplemdmDefaultStruct{}
+	err = json.Unmarshal(body, &profile)
 	if err != nil {
 		return nil, err
 	}
 
-	return &app, nil
+	return &profile, nil
 }
 
 // Assign profile to the group
