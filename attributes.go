@@ -116,7 +116,7 @@ func (c *Client) AttributeDelete(name string) error {
 
 // SetAttributeForDeviceGroupAttribute - Updates an attribute for group
 func (c *Client) AttributeSetAttributeForDeviceGroup(groupID string, attribute string, defaultValue string) error {
-	url := fmt.Sprintf("https://%s/api/v1/device_groups/%s/custom_attribute_values/%s", c.HostName, groupID, attribute)
+	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/custom_attribute_values/%s", c.HostName, groupID, attribute)
 	req, err := http.NewRequest(http.MethodPut, url, nil)
 	if err != nil {
 		return err

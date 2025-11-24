@@ -9,14 +9,7 @@ import (
 	"strings"
 )
 
-func (c *Client) ScriptJobCreate(
-	scriptId string,
-	deviceIDs []string,
-	groupIds []string,
-	assignmentGroupIds []string,
-	customAttribute string,
-	customAttributeRegex string,
-) (*SimplemdmDefaultStruct, error) {
+func (c *Client) ScriptJobCreate(scriptId string, deviceIDs []string, assignmentGroupIds []string, customAttribute string, customAttributeRegex string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/script_jobs", c.HostName)
 
 	body := &bytes.Buffer{}
@@ -33,9 +26,6 @@ func (c *Client) ScriptJobCreate(
 
 	if len(deviceIDs) > 0 {
 		q.Add("device_ids", strings.Join(deviceIDs, ","))
-	}
-	if len(groupIds) > 0 {
-		q.Add("group_ids", strings.Join(groupIds, ","))
 	}
 	if len(assignmentGroupIds) > 0 {
 		q.Add("assignment_group_ids", strings.Join(assignmentGroupIds, ","))

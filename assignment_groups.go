@@ -9,7 +9,7 @@ import (
 )
 
 // CreateAssignmentGroup - Create new addignment group
-func (c *Client) AssignmentGroupCreate(name string, autoDeploy bool, groupType string, installType string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) AssignmentGroupCreate(name string, autoDeploy bool, priority string, appTrackLocation bool) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/", c.HostName)
 	req, err := http.NewRequest(http.MethodPost, url, nil)
 	if err != nil {
@@ -27,25 +27,14 @@ func (c *Client) AssignmentGroupCreate(name string, autoDeploy bool, groupType s
 		q.Add("auto_deploy", "false")
 	}
 
-	q.Add("type", groupType)
-
-	if groupType == "munki" {
-		switch installType {
-		case "managed_updates":
-			q.Add("install_type", "managed_updates")
-		case "self_serve":
-			q.Add("install_type", "self_serve")
-		case "default_installs":
-			q.Add("install_type", "default_installs")
-		default:
-			q.Add("install_type", "managed")
-		}
+	switch {
+	case appTrackLocation:
+		q.Add("app_track_location", "true")
+	default:
+		q.Add("app_track_location", "false")
 	}
 
-	//Not in API
-	//auto_deploy - true
-	//type standard /opt munki
-	//install_type managed /opt self_serve, default_installs, managed_updates
+	q.Add("priority", priority)
 
 	// encoding all parameters
 	req.URL.RawQuery = q.Encode()
@@ -86,7 +75,7 @@ func (c *Client) AssignmentGroupDelete(ID string) error {
 }
 
 // UpdateAssignmentGroup - Updates an assignment group
-func (c *Client) AssignmentGroupUpdate(name string, autoDeploy bool, ID string, groupType string, installType string) error {
+func (c *Client) AssignmentGroupUpdate(name string, autoDeploy bool, ID string, appTrackLocation bool, priority string) error {
 	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s", c.HostName, ID)
 	req, err := http.NewRequest(http.MethodPatch, url, nil)
 	if err != nil {
@@ -104,18 +93,14 @@ func (c *Client) AssignmentGroupUpdate(name string, autoDeploy bool, ID string, 
 		q.Add("auto_deploy", "false")
 	}
 
-	if groupType == "munki" {
-		switch installType {
-		case "managed_updates":
-			q.Add("install_type", "managed_updates")
-		case "self_serve":
-			q.Add("install_type", "self_serve")
-		case "default_installs":
-			q.Add("install_type", "default_installs")
-		default:
-			q.Add("install_type", "managed")
-		}
+	switch {
+	case appTrackLocation:
+		q.Add("app_track_location", "true")
+	default:
+		q.Add("app_track_location", "false")
 	}
+
+	q.Add("priority", priority)
 
 	// encoding all parameters
 	req.URL.RawQuery = q.Encode()
@@ -258,4 +243,26 @@ func (c *Client) AssignmentGroupSyncProfiles(groupID string) error {
 	}
 
 	return nil
+}
+
+// AttributeGetAttributesForGroup - Returns a specifc attribute
+func (c *Client) AttributeGetAttributesForGroup(groupID string) (*AttributeArray, error) {
+	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/custom_attribute_values", c.HostName, groupID)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.RequestResponse200(req)
+	if err != nil {
+		return nil, err
+	}
+
+	attributes := AttributeArray{}
+	err = json.Unmarshal(body, &attributes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &attributes, nil
 }

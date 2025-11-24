@@ -1,5 +1,7 @@
 package simplemdm
 
+import "encoding/json"
+
 type Attribute struct {
 	Data struct {
 		Type       string     `json:"type"`
@@ -39,6 +41,9 @@ type Attributes struct {
 	Name                   string `json:"name"`
 	AutoDeploy             bool   `json:"auto_deploy"`
 	Type                   string `json:"type"`
+	Priority               int    `json:"priority,omitempty"`
+	AppTrackLocation       bool   `json:"app_track_location"`
+	GroupType              string `json:"group_type"`
 	InstallType            string `json:"install_type"`
 	DefaultValue           string `json:"default_value"`
 	ReinstallAfterOsUpdate bool   `json:"reinstall_after_os_update"`
@@ -82,6 +87,7 @@ type Relations struct {
 	Device           Device           `json:"device,omitempty"`
 	CustomAttributes CustomAttributes `json:"custom_attribute_values,omitempty"`
 	CustomAttribute  CustomAttribute  `json:"custom_attribute,omitempty"`
+	Groups           Groups           `json:"groups,omitempty"`
 }
 
 type Apps struct {
@@ -97,7 +103,8 @@ type CustomAttribute struct {
 }
 
 type DeviceGroups struct {
-	Data []Data `json:"data,omitempty"`
+	Data   []Data `json:"data,omitempty"`
+	Groups Groups `json:"groups,omitempty"`
 }
 
 type DeviceGroup struct {
@@ -116,13 +123,27 @@ type Device struct {
 	Data []Data `json:"data,omitempty"`
 }
 
+type Groups struct {
+	Data []Data `json:"data,omitempty"`
+}
+
 type Data struct {
-	Type string `json:"type"`
-	ID   int    `json:"id"`
+	Type           string `json:"type"`
+	ID             int    `json:"id"`
+	GroupType      string `json:"group_type,omitempty"`
+	InstallType    string `json:"install_type,omitempty"`
+	DeploymnetType string `json:"deployment_type,omitempty"`
 }
 
 type DataCustomAttributes struct {
 	Type       string     `json:"type"`
 	ID         string     `json:"id"`
 	Attributes Attributes `json:"attributes"`
+}
+
+type DeclarationStruct struct {
+	Type        string          `json:"Type"`
+	Identifier  string          `json:"Identifier"`
+	ServerToken string          `json:"ServerToken"`
+	Payload     json.RawMessage `json:"Payload,omitempty"`
 }
