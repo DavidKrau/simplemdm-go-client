@@ -156,6 +156,5 @@ func (c *Client) ProfileGetAll() (*SimpleMDMArayStruct, error) {
 			}
 		}
 	}
-
 	return &profiles, nil
 }
