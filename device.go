@@ -29,7 +29,7 @@ func (c *Client) DeviceGet(deviceID string) (*SimplemdmDefaultStruct, error) {
 }
 
 // CreateDevice - Create new device
-func (c *Client) DeviceCreate(name string, groupID string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) DeviceCreate(name string, groupIDs []string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/devices/", c.HostName)
 
 	req, err := http.NewRequest(http.MethodPost, url, nil)
@@ -40,7 +40,9 @@ func (c *Client) DeviceCreate(name string, groupID string) (*SimplemdmDefaultStr
 	q := req.URL.Query()
 	// adding parameter name with variable name
 	q.Add("name", name)
-	q.Add("group_id", groupID)
+	for _, group := range groupIDs {
+		q.Add("static_group_ids[]", group)
+	}
 
 	// encoding all parameters
 	req.URL.RawQuery = q.Encode()
