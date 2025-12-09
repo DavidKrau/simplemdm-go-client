@@ -139,7 +139,7 @@ func (c *Client) AssignmentGroupGet(ID string) (*SimplemdmDefaultStruct, error) 
 	return &assignmentGroup, nil
 }
 
-// object type is app, device, group, profile, devices
+// object type is device, group, profile, devices
 // groupid is id of the assignment app
 // objectid is id of the object we want to assign to the group
 func (c *Client) AssignmentGroupAssignObject(groupID string, objectID string, objectType string) error {
@@ -265,4 +265,51 @@ func (c *Client) AttributeGetAttributesForGroup(groupID string) (*AttributeArray
 	}
 
 	return &attributes, nil
+}
+
+func (c *Client) AssignmentGroupAssignApp(groupID string, appID string, deploymnetType string, InstallType string) error {
+	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/apps/%s", c.HostName, groupID, appID)
+	req, err := http.NewRequest(http.MethodPost, url, nil)
+	if err != nil {
+		return err
+	}
+
+	q := req.URL.Query()
+
+	q.Add("deployment_type", deploymnetType)
+	q.Add("install_type", InstallType)
+
+	req.URL.RawQuery = q.Encode()
+
+	body, err := c.RequestResponse204(req)
+
+	if err != nil {
+		return err
+	}
+
+	if string(body) != "" {
+		return errors.New(string(body))
+	}
+
+	return nil
+}
+
+func (c *Client) AssignmentGroupUnAssignApp(groupID string, appID string) error {
+	url := fmt.Sprintf("https://%s/api/v1/assignment_groups/%s/apps/%s", c.HostName, groupID, appID)
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return err
+	}
+
+	body, err := c.RequestResponse204(req)
+
+	if err != nil {
+		return err
+	}
+
+	if string(body) != "" {
+		return errors.New(string(body))
+	}
+
+	return nil
 }
