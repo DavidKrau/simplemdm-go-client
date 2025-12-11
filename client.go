@@ -184,6 +184,21 @@ func (c *Client) RequestResponse204or409(req *http.Request) ([]byte, error) {
 		return nil, nil
 	}
 
+	if res.StatusCode == http.StatusTooManyRequests {
+		time.Sleep(30 * time.Second)
+		res, err = c.httpClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer res.Body.Close()
+
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return nil, err
+		}
+
+	}
+
 	if res.StatusCode != http.StatusNoContent {
 		resBody := new(bytes.Buffer)
 		_, err = resBody.ReadFrom(res.Body)
@@ -191,6 +206,48 @@ func (c *Client) RequestResponse204or409(req *http.Request) ([]byte, error) {
 			return nil, fmt.Errorf("got a non 204 or 409 status code: %v", res.StatusCode)
 		}
 		return nil, fmt.Errorf("got a non 204 or 409 status code: %v - %s", res.StatusCode, resBody.String())
+	}
+
+	return body, nil
+}
+
+// 202or429 response code
+func (c *Client) RequestResponse202or429(req *http.Request) ([]byte, error) {
+	req.SetBasicAuth(c.APIKey, "")
+	time.Sleep(1 * time.Second)
+	res, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode == http.StatusTooManyRequests {
+		time.Sleep(30 * time.Second)
+		res, err = c.httpClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer res.Body.Close()
+
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return nil, err
+		}
+
+	}
+
+	if res.StatusCode != http.StatusAccepted {
+		resBody := new(bytes.Buffer)
+		_, err = resBody.ReadFrom(res.Body)
+		if err != nil {
+			return nil, fmt.Errorf("got a non 202 status code: %v", res.StatusCode)
+		}
+		return nil, fmt.Errorf("got a non 202 status code: %v - %s - %s", res.StatusCode, req.URL, resBody.String())
 	}
 
 	return body, nil

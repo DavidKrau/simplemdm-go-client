@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"time"
 )
 
 // CreateAssignmentGroup - Create new addignment group
@@ -191,8 +190,7 @@ func (c *Client) AssignmentGroupPushApps(groupID string) error {
 	if err != nil {
 		return err
 	}
-	time.Sleep(30 * time.Second)
-	body, err := c.RequestResponse202(req)
+	body, err := c.RequestResponse202or429(req)
 
 	if err != nil {
 		return err
@@ -211,8 +209,7 @@ func (c *Client) AssignmentGroupUpdateInstalledApps(groupID string) error {
 	if err != nil {
 		return err
 	}
-	time.Sleep(30 * time.Second)
-	body, err := c.RequestResponse202(req)
+	body, err := c.RequestResponse202or429(req)
 
 	if err != nil {
 		return err
@@ -231,8 +228,7 @@ func (c *Client) AssignmentGroupSyncProfiles(groupID string) error {
 	if err != nil {
 		return err
 	}
-	time.Sleep(30 * time.Second)
-	body, err := c.RequestResponse204(req)
+	body, err := c.RequestResponse204or409(req)
 
 	if err != nil {
 		return err
