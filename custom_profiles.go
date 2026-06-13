@@ -13,7 +13,7 @@ import (
 )
 
 // CreateProfile - Create new profile
-func (c *Client) CustomProfileCreate(name string, mobileConfig string, userScope bool, attributeSupport bool, escapeAttributes bool, reinstallAfterOsUpdate bool) (*SimplemdmDefaultStruct, error) {
+func (c *Client) CustomProfileCreate(name string, mobileConfig string, userScope bool, attributeSupport bool, escapeAttributes bool, reinstallAfterOsUpdate bool, declarative bool, autoRenewScepBasedCertificates bool, allowedPlatforms []string, minimumMacosVersion *string, maximumMacosVersion *string, allowedMacosArchitecture string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/", c.HostName)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
@@ -72,15 +72,37 @@ func (c *Client) CustomProfileCreate(name string, mobileConfig string, userScope
 		q.Add("reinstall_after_os_update", "false")
 	}
 
-	// defaults:
-	// user_scope false
-	// attribute_support false
-	// escape_attributes false
-	// reinstall_after_os_update false
+	switch {
+	case declarative:
+		q.Add("declarative", "true")
+	default:
+		q.Add("declarative", "false")
+	}
 
-	//Not in API
-	//Auto renew SCEP issued certificates
-	//Enable Declarative Management
+	switch {
+	case autoRenewScepBasedCertificates:
+		q.Add("auto_renew_scep_based_certificates", "true")
+	default:
+		q.Add("auto_renew_scep_based_certificates", "false")
+	}
+
+	// Handle allowed_platforms array
+	if len(allowedPlatforms) > 0 {
+		for _, platform := range allowedPlatforms {
+			q.Add("allowed_platforms[]", platform)
+		}
+	}
+
+	// Handle optional version fields
+	if minimumMacosVersion != nil {
+		q.Add("minimum_macos_version", *minimumMacosVersion)
+	}
+
+	if maximumMacosVersion != nil {
+		q.Add("maximum_macos_version", *maximumMacosVersion)
+	}
+
+	q.Add("allowed_macos_architecture", allowedMacosArchitecture)
 
 	// encoding all parameters
 	req.URL.RawQuery = q.Encode()
@@ -122,7 +144,7 @@ func (c *Client) CustomProfileDelete(profileID string) error {
 }
 
 // UpdateProfile - Updates an profile
-func (c *Client) CustomProfileUpdate(name string, mobileConfig string, userScope bool, attributeSupport bool, escapeAttributes bool, reinstallAfterOsUpdate bool, fileSHA string, ID string) (*SimplemdmDefaultStruct, error) {
+func (c *Client) CustomProfileUpdate(name string, mobileConfig string, userScope bool, attributeSupport bool, escapeAttributes bool, reinstallAfterOsUpdate bool, declarative bool, autoRenewScepBasedCertificates bool, allowedPlatforms []string, minimumMacosVersion *string, maximumMacosVersion *string, allowedMacosArchitecture string, ID string) (*SimplemdmDefaultStruct, error) {
 	url := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/%s", c.HostName, ID)
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
@@ -181,9 +203,37 @@ func (c *Client) CustomProfileUpdate(name string, mobileConfig string, userScope
 		q.Add("reinstall_after_os_update", "false")
 	}
 
-	//Not in API
-	//Auto renew SCEP issued certificates
-	//Enable Declarative Management
+	switch {
+	case declarative:
+		q.Add("declarative", "true")
+	default:
+		q.Add("declarative", "false")
+	}
+
+	switch {
+	case autoRenewScepBasedCertificates:
+		q.Add("auto_renew_scep_based_certificates", "true")
+	default:
+		q.Add("auto_renew_scep_based_certificates", "false")
+	}
+
+	// Handle allowed_platforms array
+	if len(allowedPlatforms) > 0 {
+		for _, platform := range allowedPlatforms {
+			q.Add("allowed_platforms[]", platform)
+		}
+	}
+
+	// Handle optional version fields
+	if minimumMacosVersion != nil {
+		q.Add("minimum_macos_version", *minimumMacosVersion)
+	}
+
+	if maximumMacosVersion != nil {
+		q.Add("maximum_macos_version", *maximumMacosVersion)
+	}
+
+	q.Add("allowed_macos_architecture", allowedMacosArchitecture)
 
 	// encoding all parameters
 	req.URL.RawQuery = q.Encode()
@@ -226,20 +276,20 @@ func (c *Client) CustomProfileGet(profileID string) (*SimplemdmDefaultStruct, er
 }
 
 // GetProfileSHA - Returns a specifc profile
-func (c *Client) CustomProfileSHA(profileID string) (string, string, error) {
+func (c *Client) CustomProfileDownload(profileID string) (string, error) {
 	downloadurl := fmt.Sprintf("https://%s/api/v1/custom_configuration_profiles/%s/download", c.HostName, profileID)
 
 	req, err := http.NewRequest(http.MethodGet, downloadurl, nil)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
-	body, sha, err := c.RequestResponse200Profile(req)
+	body, err := c.RequestResponse200Profile(req)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
-	return sha, body, nil
+	return body, nil
 }
 
 // GetAllProfiles - Returns all Profiles
